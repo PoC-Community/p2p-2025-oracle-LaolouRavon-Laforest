@@ -2,10 +2,24 @@
 pragma solidity ^0.8.13;
 
 contract Oracle {
+    struct Round {
+        uint256 id;
+        uint256 totalSubmissionCount;
+        uint256 lastUpdatedAt;
+    }
     address public owner;
     address[] public nodes;
     mapping(address => bool) public isNode;
+    mapping(string => Round) public rounds;
+    mapping(string => mapping(uint256 => mapping(address => uint256))) public nodePrices;
+    mapping(string => mapping(uint256 => mapping(address => bool))) public hasSubmitted;
     mapping(string => uint256) public currentPrices;
+
+    event PriceUpdated(
+        string indexed coin,
+        uint256 price,
+        uint256 roundId
+    );
 
     constructor() {
         owner = msg.sender;
